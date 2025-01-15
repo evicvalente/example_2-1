@@ -98,22 +98,28 @@ void alarmDeactivationUpdate()
 void uartTask()
 {
     char receivedChar = '\0';
-    if( uartUsb.readable() ) {
+
+    if ( uartUsb.readable() ) {
         uartUsb.read( &receivedChar, 1 );
-        if ( receivedChar == '1') {
-            if ( alarmState ) {
-                uartUsb.write( "The alarm is activated\r\n", 24);
-            } else {
-                uartUsb.write( "The alarm is not activated\r\n", 28);
-            }
-        } else {
+        
+        // If user presses '1', show the available commands:
+        if ( receivedChar == '1' ) {
             availableCommands();
+        }
+        // If user presses '2', show alarm status:
+        else if ( receivedChar == '2' ) {
+            if ( alarmState ) {
+                uartUsb.write( "Alarm activated\r\n", 17 );
+            } else {
+                uartUsb.write( "Alarm NOT activated\r\n", 21 );
+            }
         }
     }
 }
 
 void availableCommands()
 {
-    uartUsb.write( "Available commands:\r\n", 21 );
-    uartUsb.write( "Press '1' to get the alarm state\r\n\r\n", 36 );
+    // Show the exact text requested
+    uartUsb.write( "Available commands:\r\n", 22 );
+    uartUsb.write( "Press '2' to get the alarm state\r\n\r\n", 36 );
 }
